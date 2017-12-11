@@ -1,0 +1,223 @@
+<style type="text/css">
+                    .tg  {border-collapse:collapse;border-spacing:0;}
+                    .tg td{font-family:Arial, sans-serif;font-size:10px;padding:1px 1px;overflow:hidden;word-break:normal}
+                    .tg th{font-family:Arial, sans-serif;font-size:10px;font-weight:normal;padding:1px 1px;overflow:hidden;word-break:normal}
+                    .tg .tg-tzkj{font-weight:bold;font-size:100%;text-align:left;vertical-align:top}
+                    .tg .tg-s6z2{text-align:center}
+                    .tg .tg-baqh{text-align:center;vertical-align:top}
+                    .tg .tg-e3zv{}
+                    .tg .tg-je1q{background-color:#f56b00;color:#ffffff}
+                    .tg .tg-gozu{font-size:10px;text-align:left}
+                    .tg .tg-yw4l{vertical-align:top}
+                    .tg .tg-u1yq{font-weight:bold;background-color:#c0c0c0;text-align:center;vertical-align:top}
+                    .tg .tg-9hbo{vertical-align:top}
+                    .tg .tg-hgcj{font-weight:bold;text-align:center}
+                    .tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+                    .tg .tg-l2oz{font-weight:bold;text-align:right;vertical-align:top}
+                    .tg .tg-pbv7{font-weight:bold;background-color:#f56b00;text-align:center}
+                    .tg .tg-hy62{background-color:#c0c0c0}
+                    .tg .tg-codigo{;padding:10px 10px;vertical-align:middle}
+                </style>
+                <table class="tg">
+
+                      <tr>
+                          <td class="tg-s6z2" colspan="3" rowspan="3"><img t-if="company.logo" t-att-src="'data:image/png;base64,%s' %
+                        company.logo" style="max-height: 100px;"/></td>
+                        <th class="tg-tzkj" colspan="4"><span t-esc="company.name"/></th>
+                      </tr>
+                      <tr>
+                        <td class="tg-gozu" colspan="2">R.F.C.: <span t-esc="company.vat"/> </td>
+                          <td class="tg-u1yq" colspan="2">Factura</td>
+                      </tr>
+                      <tr>
+                          <td class="tg-yw4l" colspan="2">
+                              <span t-field="company.partner_id"
+                                t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+                          </td>
+                          <td class="tg-9hbo" colspan="2" rowspan="4">
+                              <strong>Serie: </strong> <span t-field="o.move_name"/><br/>
+                              <strong>Folio: </strong><br/>
+                              <strong>Fecha: </strong><br/>
+                              <strong>Forma de pago: </strong><br/>
+                              <br/>
+                              <strong>Metodo de pago y cuenta: </strong><br/>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td class="tg-je1q" colspan="2"><strong>Telefono de Servicios al cliente</strong></td>
+                        <td class="tg-yw4l">Planta mexico</td>
+                        <td class="tg-yw4l">Planta queretaro</td>
+                        <td class="tg-yw4l">Planta sonora</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-yw4l" colspan="2">Telefono</td>
+                        <td class="tg-yw4l"><span t-field="company.phone"/></td>
+                        <td class="tg-yw4l">(442) 221 63 06 - 07</td>
+                        <td class="tg-yw4l">(662) 285 06 60</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-031e" colspan="2">Fax</td>
+                        <td class="tg-yw4l"></td>
+                        <td class="tg-yw4l">(442) 221 63 08</td>
+                        <td class="tg-yw4l">(662) 285 06 50</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="5" style="border-style:solid;">
+                            <strong>Facturado a:</strong><br/>
+                            <span t-if="o.partner_id.vat">R.F.C.: <span t-field="o.partner_id.vat"/></span>
+                            <address t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                            <!--strong>Proveedor: </strong>FALTA<br/-->
+                            <strong>Nde Pedido: </strong>
+                            <span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Invoice</span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'proforma2'">PRO-FORMA</span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+                            <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+                            <span t-if="o.type == 'out_refund'">Refund</span>
+                            <span t-if="o.type == 'in_refund'">Vendor Refund</span>
+                            <span t-if="o.type == 'in_invoice'">Vendor Bill</span>
+                            <span t-field="o.number"/><br/>
+                            <strong>Condiciones: </strong><span t-raw="'%s &lt;br&gt;' % o.payment_term_id and o.payment_term_id.name or 'Contado'"/></td>
+                        <td class="tg-9hbo" colspan="2" rowspan="2">
+                            <strong>Regimen fiscal: </strong><br/>
+
+                            <br/>
+                            <strong>Lugar de expedicion: </strong><br/>
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="tg-9hbo" colspan="5">Observaciones: <span t-field="o.notes"/></td>
+                      </tr>
+                      <tr  style="border-bottom: 1px solid black; border-top: 1px solid black;">
+                        <td class="tg-hgcj">Cantidad</td>
+                        <td class="tg-amwm">Unidad</td>
+                        <td class="tg-9hbo" colspan="3"><strong>Descripcion</strong></td>
+                        <td class="tg-amwm">Precio unitario</td>
+                        <td class="tg-amwm">Importe Total</td>
+                      </tr>
+                      <tr t-foreach="o.invoice_line_ids" t-as="l">
+                        <td class="tg-s6z2"><span t-field="l.quantity"/></td>
+                        <td class="tg-baqh"><span t-field="l.uom_id" groups="product.group_uom"/></td>
+                        <td class="tg-yw4l" colspan="3"><span t-field="l.name"/></td>
+                        <td class="tg-baqh"><span t-field="l.price_unit"/></td>
+                        <td class="tg-baqh"><span t-field="l.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                      </tr>
+                      <tr style="border-top: 1px solid black;">
+                        <td class="tg-codigo" colspan="4" rowspan="7"></td>
+                          <td class="tg-031e" colspan="3" style="border-style:solid;border-width: 2px; border-color:#f56b00; border-bottom: 0px"><![CDATA[&nbsp;]]></td>
+                      </tr>
+                    <tr>
+                        <td class="tg-9hbo" colspan="2" ><strong>Subtotal</strong></td>
+                        <td class="tg-l2oz" colspan="1" ><span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                    </tr>
+                    <t t-if ="o.total_discount > 0">
+                      <tr>
+                        <td class="tg-9hbo" colspan="2"><strong>Descuento</strong></td>
+                        <td class="tg-l2oz" colspan="1"><span t-field="o.total_discount" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/></td>
+                      </tr>
+                    </t>
+                      <tr>
+                        <td class="tg-9hbo" colspan="2"><strong>IVA 16%</strong></td>
+                            <t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+                                    <td class="tg-l2oz" colspan="1">
+                                        <span t-esc="amount_by_group[1]"/>
+                                    </td>
+                            </t>
+                      </tr>
+                      <!--tr>
+                        <td class="tg-9hbo" colspan="2"><strong>Retencion I.V.A.</strong></-td>
+                        <td class="tg-l2oz" colspan="1">FALTA</td>
+                      </tr-->
+                      <tr>
+                        <td class="tg-9hbo" colspan="2" style="border-bottom: 1px solid black; border-top: 1px solid black;"><strong>Total</strong></td>
+                        <td class="tg-l2oz" colspan="1" style="border-bottom: 1px solid black; border-top: 1px solid black;">
+                            <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                        </td>
+                      </tr>
+                    <tr>
+                        <td class="tg-l2oz" colspan="3" style="border-style:solid;border-width: 2px; border-color:#f56b00; border-top: 0px"><![CDATA[&nbsp;]]></td>
+                    </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="7" style="border-style:solid;border-width: 1px;"></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-pbv7" colspan="7">"Este documento es una representacion impresa de un CFDI"</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="3"><strong>Folio fiscal: </strong><br/></td>
+                        <td class="tg-yw4l"></td>
+                        <td class="tg-9hbo" colspan="3"><strong>Fecha y hora de certificacion: </strong><br/></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="7"><strong>Sello digital del CFDI: </strong><br/>
+                        <br/></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="3"><strong>Numero de serie del Certificado de sello Digital: </strong><br/>
+                        <br/></td>
+                        <td class="tg-yw4l"></td>
+                        <td class="tg-9hbo" colspan="3"><strong>Numero de serie del Certificado de sello digital del SAT: </strong><br/>
+                        <br/></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="7"><strong>Cadena original del complemento de certificacion digital del SAT: </strong><br/>
+                        <br/></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-e3zv" colspan="7"><strong>Sello digital del SAT: </strong><br/>
+                        <br/></td>
+                      </tr>
+                      <tr>
+                        <td class="tg-amwm" colspan="7" style="border-style:solid;">DATOS BANCARIOS</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-hgcj" style="border-style:solid;">Oficina</td>
+                        <td class="tg-amwm" style="border-style:solid;">Banco </td>
+                        <td class="tg-amwm" style="border-style:solid;">Sucursal </td>
+                        <td class="tg-amwm" style="border-style:solid;">Cta</td>
+                        <td class="tg-amwm" style="border-style:solid;">Clabe</td>
+                        <td class="tg-amwm" style="border-style:solid;">Referencia</td>
+                        <td class="tg-amwm" style="border-style:solid;">Mails</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-s6z2" style="border-style:solid;">México</td>
+                        <td class="tg-baqh" style="border-style:solid;">Banamex MN</td>
+                        <td class="tg-baqh" style="border-style:solid;">16</td>
+                        <td class="tg-baqh" style="border-style:solid;">3163073</td>
+                        <td class="tg-baqh" style="border-style:solid;">002180001631630737</td>
+                        <td class="tg-baqh" style="border-style:solid;">1000159717</td>
+                        <td class="tg-baqh" style="border-style:solid;">cobranza@provem.com</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-s6z2" style="border-style:solid;">Querétaro</td>
+                        <td class="tg-baqh" style="border-style:solid;">Banamex MN</td>
+                        <td class="tg-baqh" style="border-style:solid;">4556</td>
+                        <td class="tg-baqh" style="border-style:solid;">9651</td>
+                        <td class="tg-baqh" style="border-style:solid;">002680455600096513</td>
+                        <td class="tg-baqh" style="border-style:solid;">1597</td>
+                        <td class="tg-baqh" style="border-style:solid;">cobranza@provem.com</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-s6z2" style="border-style:solid;">Corporativo</td>
+                        <td class="tg-baqh" style="border-style:solid;">Banamex USD</td>
+                        <td class="tg-baqh" style="border-style:solid;">482</td>
+                        <td class="tg-baqh" style="border-style:solid;">9430849</td>
+                        <td class="tg-baqh" style="border-style:solid;">002180048294308498</td>
+                        <td class="tg-baqh" style="border-style:solid;">1597</td>
+                        <td class="tg-baqh" style="border-style:solid;">cobranza@provem.com</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-s6z2" style="border-style:solid;">Corporativo</td>
+                        <td class="tg-baqh" style="border-style:solid;">Banamex MN</td>
+                        <td class="tg-baqh" style="border-style:solid;">1821</td>
+                        <td class="tg-baqh" style="border-style:solid;">0447791674</td>
+                        <td class="tg-baqh" style="border-style:solid;">012180004477916741</td>
+                        <td class="tg-baqh" style="border-style:solid;">1597</td>
+                        <td class="tg-baqh" style="border-style:solid;">cobranza@provem.com</td>
+                      </tr>
+                      <tr>
+                        <td class="tg-hy62" colspan="7">Valor recibido a mi (nuestra) entera satisfacción. Este pagaré forma parte de una serie numerada del 1 al 1 y todos están sujetos a la condición de que,al no pagarse cualquiera de ellos a su vencimiento, serán exigibles todos los que le sigan en número, además de los ya vencidos desde la fecha devencimiento de éste documento hasta el día de su liquidación, causará intereses moratorios al tipo de 3% mensual, pagadero en ésta ciudad juntamentecon el principal, más los gastos que por ello originen.</td>
+                      </tr>
+                </table>
+
+

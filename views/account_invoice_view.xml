@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id= "provem_ro_form__view" model="ir.ui.view">
+            <field name= "inherit_id" ref="account.invoice_form" />
+            <field name="model">account.invoice</field>
+            <field name="arch" type= "xml">
+
+                <field name="payment_term_id" position="after">
+                    <field name="notes"/>
+                </field>
+
+            </field>
+        </record>
+</odoo>
