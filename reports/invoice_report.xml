@@ -2,13 +2,14 @@
 <odoo>
 
 
-    <template id="account.report_invoice">
+    <template id="account.report_invoice_with_payments">
         <!--<t t-call="web.external_layout">-->
 
         <t t-call="provem_ro.external_layout">
             <t t-foreach="docs" t-as="o">
             <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
             <div class="page" style="border-style:solid;border-width: 2px; border-color:#f56b00;" >
+                <t t-if="o.l10n_mx_edi_cfdi_uuid">
 
                 <t t-if="not o and doc">
                     <t t-set="o" t-value="doc"/>
@@ -244,12 +245,12 @@
                  <div style="border:1px solid black;background:#f56b00;text-align:center;font-family:Arial, sans-serif;font-size:16pt; ">
                     <span>"Este documento es una representación impresa de un CFDI"</span>
                 </div>
-                <t t-if="o.l10n_mx_edi_cfdi_uuid">
+
                     <!--New global variables-->
                     <t t-set="xml" t-value="o.l10n_mx_edi_get_xml_etree()"/>
                     <t t-set="tfd" t-value="o.l10n_mx_edi_get_tfd_etree(xml)"/>
                     <t t-set="tfd_original_string" t-value="o._get_l10n_mx_edi_cadena()"/>
-                </t>
+
                 <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:16pt;  ">
                    <tr>
                      <td style="width:50%;">
@@ -297,6 +298,7 @@
                        <td><span class="nowrap" t-esc="tfd_original_string"/></td>
                    </tr>
                 </table>
+
                 <b style="text-aling:center;">DATOS BANCARIOS</b>
                 <table style=" border:1px solid black; width:100%;font-family:Arial, sans-serif;font-size:16pt;  ">
                    <tr style="text-align:center;">
@@ -352,7 +354,362 @@
                     vencimiento de éste documento hasta el día de su liquidación, causará intereses moratorios al tipo de 3% mensual, pagadero en ésta ciudad juntamente
                     con el principal, más los gastos que por ello originen.
                 </div>
-            </div>
+                </t>
+
+
+
+
+
+
+
+
+            <t t-if="not o.l10n_mx_edi_cfdi_uuid">
+                <t t-if="not o and doc">
+                    <t t-set="o" t-value="doc"/>
+                </t>
+                <t t-if="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id"/>
+                </t>
+                <t t-if="not o or not 'company_id' in o">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+                <table style=" border:0px solid white; width:100%; ">
+                    <tr>
+                        <td  style="width:22%; "><br/><br/>
+                           <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % to_text(company.logo)" style="max-height: 90px;" align="bottom"/>
+                        </td>
+                        <td style="width:48%;font-family:Arial, sans-serif;font-size:9pt">
+                            <b style="font-family:Arial, sans-serif;font-size:22pt;" t-esc="company.name"/><br/>
+                             <b style="font-family:Arial, sans-serif;font-size:9pt">RFC. :   </b>
+                            <span t-field="o.company_id.company_registry"/><br/>
+                            <span t-field="o.company_id.street_name"/> <span t-field="o.company_id.street_number"/><br/>
+                            <span t-field="o.company_id.street2"/><br/>
+                            <span t-field="o.company_id.state_id.name"/> <span style="text-align:right;" t-field="o.company_id.zip"/><br/>
+                        </td>
+                        <td style="width:30%;font-family:Arial, sans-serif;font-size:9pt">
+                            <table style=" border:0px solid white; width:100%; ">
+                                <tr style="background:#bdbdbd;">
+                                    <td>
+                                        <b style="text-align:center;font-size:9pt">Factura</b>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Serie/Folio:</b></td>
+                                    <td><span t-field="o.move_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Fecha:</b></td>
+                                    <td><span t-field="o.date_invoice"/></td>
+                                </tr><tr>
+                                    <td><b>Forma de pago:</b></td>
+                                    <td> <span t-field="o.payment_term_id.name"/></td>
+                                </tr>
+                                <tr>
+                                  <td><b>Metódo de Pago y Cuenta</b></td>
+                                  <td><span t-field="o.l10n_mx_edi_payment_method_id"/></td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr>
+                     <td style="width:22%; ">
+                         <table style=" border:0px solid white; width:100%;  ">
+                           <tr style="background:#f56b00;">
+                             <td><b style="color:white;">Telefono de Servicio al Cliente</b></td>
+                           </tr>
+                        </table>
+                     </td>
+                     <td style="width:16%; ">
+                         <span>Planta México</span>
+                     </td>
+                       <td style="width:16%; ">
+                           <span>Planta Querétaro</span>
+                     </td>
+                        <td style="width:16%; ">
+                           <span>Planta Sonora</span>
+                     </td>
+                       <td style="width:30%; ">
+
+                     </td>
+                   </tr>
+                </table>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr>
+                     <td style="width:10%;">Teléfono</td>
+                       <td style="width:30%;">01 (55) 5576 - 0663 y 01 (55) 5576 - 0674</td>
+                       <td style="width:15%;">(442) 221 63 06 - 07</td>
+                       <td style="width:15%;">(662) 285 06 60</td>
+                       <td style="width:30%;"></td>
+                   </tr>
+                    <tr>
+                     <td style="width:10%;">Fax</td>
+                     <td style="width:30%;">01 800 506 64 13</td>
+                        <td style="width:15%;">(442) 221 63 08</td>
+                        <td style="width:15%;">(662) 285 06 50</td>
+                        <td style="width:30%;"></td>
+                   </tr>
+                </table><br/>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr>
+                     <td style="width:70%; border:1px solid black;">
+                         <table style=" border-top:1px solid black; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                           <tr>
+                             <td>
+                                 <b>Facturado a:</b>(<span t-field="o.partner_id.ref"/>) <span t-field="o.partner_id.name"/>
+                             </td>
+                           </tr>
+                           <tr>
+                                <td>
+                                    Calle:
+                                  <span t-field="o.partner_id.street_name"/>
+                                   No. ext <span t-field="o.partner_id.street_number"/>
+                                    <span t-if="o.partner_id.street_number2">
+                                        No. int <span t-field="o.partner_id.street_number2"/>
+                                    </span>,
+                                   <span t-if="o.partner_id.l10n_mx_edi_colony">
+                                        Col. <span t-field="o.partner_id.l10n_mx_edi_colony"/>
+                                   </span>
+                                </td>
+                           </tr>
+
+                             <tr>
+                                <td>
+                                      <b>No Pedido:</b><span t-field="o.origin"/>
+                                </td>
+                           </tr>
+                             <tr>
+                                <td>
+                                  <b>Condiciones:</b><span t-field="o.payment_term_id.name"/>
+                                </td>
+                           </tr>
+
+                        </table>
+                     </td>
+                       <td style="width:30%;">
+
+                           <b>Régimen Fiscal:</b>
+                           <span t-field="o.fiscal_position_id.name"/><br/>
+                           <b>Lugar Expedición:</b><br/>
+                          <span>Calle: </span> <span t-field="o.company_id.street_name"/>
+                           <span> No. </span><span t-field="o.company_id.street_number"/>
+                            <span> Colonia </span><span t-field="o.company_id.street2"/>
+                           <span> CP. </span><span t-field="o.company_id.zip"/>
+                           <span t-field="o.company_id.l10n_mx_edi_locality"/> <span t-field="o.company_id.state_id.name"/>
+
+                       </td>
+                   </tr>
+                </table>
+                <b style="font-size:9pt">Observaciones</b>
+                <table style="font-family:Arial, sans-serif;font-size:9pt width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width:10%;text-align:center; border-top:1px solid black;">Cantidad</th>
+                        <th style="width:10%;text-align:center;border-top:1px solid black;">Unidad</th>
+                        <th style="width:55%; border-top:1px solid black; ">Descripción</th>
+                        <th style="width:12%; border-top:1px solid black;" class="text-right;">Precio Unitario   </th>
+                        <th style="width:13%; border-top:1px solid black;" class="text-right;">Importe  Total </th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr t-foreach="o.invoice_line_ids" t-as="l">
+                        <td  style="border-botoom:1px solid black;text-align:center;"><span t-field="l.quantity"/></td>
+                        <td style="text-align:center;border-botoom:1px solid black"><span t-field="l.uom_id"/></td>
+                        <td style="border-botoom:1px solid black;"><span t-field="l.name"/></td>
+                        <td style="border-botoom:1px solid black; text-align:center;"><span t-field="l.price_unit"/></td>
+                        <td  style="border-botoom:1px solid black;"><span t-field="l.price_subtotal" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt ">
+               <tr>
+                 <td style="width:50%;">
+                     <img t-att-src="'/report/barcode/QR/%s' % quote_plus('?') + keep_query(                                 re=o.l10n_mx_edi_cfdi_supplier_rfc, rr=o.l10n_mx_edi_cfdi_customer_rfc,                                 tt=o.l10n_mx_edi_cfdi_amount, id=o.l10n_mx_edi_cfdi_uuid)" style="width:3cm;height:3cm;"/>
+                 </td>
+                   <td style="width:50%;">
+                       <table style="border: #f56b00 3px dotted;; width:100%;font-family:Arial, sans-serif;font-size:9pt width:100%; ">
+                           <tr>
+                             <td style="width:60%;">
+                                <b>Subtotal:</b>
+                             </td>
+                               <td style="width:40%; text-align:right;">
+                                 <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                             </td>
+                           </tr>
+                           <tr>
+                             <td style="width:60%;">
+                                <b>Descuento:</b>
+                             </td>
+                               <td style="width:40%;text-align:right;">
+                                <span>0.0000</span>
+                             </td>
+                           </tr>
+                           <t t-foreach="o._get_tax_amount_by_group()" t-as="amount_by_group">
+                                <tr>
+                                    <t t-if="len(o.tax_line_ids) == 1 and o.amount_untaxed == amount_by_group[2]">
+                                        <td><span t-esc="amount_by_group[0]"/></td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[3]"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <span t-esc="amount_by_group[0]"/>
+                                            <span>&amp;nbsp;<span>on</span>
+                                                <t t-esc="amount_by_group[4]"/>
+                                            </span>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="amount_by_group[3]"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                           <tr>
+                             <td style="width:60%;">
+                                <b>Retención I.V.A:</b>
+                             </td>
+                               <td style="width:40%;text-align:right;">
+                                <span>0.0000</span>
+                             </td>
+                           </tr>
+                           <tr style="border-top: 1px solid black; border-botoom:1px solid black;">
+                             <td style="width:60%;">
+                                <b>Total:</b>
+                             </td>
+                               <td style="width:40%;text-align:right;">
+                                <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                             </td>
+                           </tr>
+
+                        </table>
+                   </td>
+               </tr>
+            </table><br/>
+                <div style="border:1px solid black;font-family:Arial, sans-serif;font-size:9pt ">
+                    <b t-esc="o.l10n_mx_edi_amount_to_text()"/>
+                </div>
+                 <div style="border:1px solid black;background:#f56b00;text-align:center;font-family:Arial, sans-serif;font-size:9pt ">
+                    <span>"Este documento es una representación impresa de un CFDI"</span>
+                </div>
+                <t t-if="o.l10n_mx_edi_cfdi_uuid">
+                    <!--New global variables-->
+                    <t t-set="xml" t-value="o.l10n_mx_edi_get_xml_etree()"/>
+                    <t t-set="tfd" t-value="o.l10n_mx_edi_get_tfd_etree(xml)"/>
+                    <t t-set="tfd_original_string" t-value="o._get_l10n_mx_edi_cadena()"/>
+
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr>
+                     <td style="width:50%;">
+                         <b>Folio Fiscal:</b><span t-esc="tfd.get('UUID')"/>
+                     </td>
+                       <td style="width:50%;">
+                          <b>Fecha y hora de certificación:</b><span t-esc="tfd.get('FechaTimbrado', '').replace('T', ' ')"/>
+                       </td>
+                   </tr>
+                </table>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr><td>
+                     <b>Sello Digital CFDI:</b></td>
+                   </tr>
+                     <tr style="font-size:9pt">
+                       <td> <span t-esc="xml.get('sello', xml.get('Sello', 'No identificado'))"/></td>
+                   </tr>
+                </table>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr>
+                     <td style="width:50%; ">
+                         <b>Número de serie del Certificado de Sello Digital:</b><br/>
+                          <span t-esc="xml.get('noCertificado', xml.get('NoCertificado'))"/>
+                     </td>
+                       <td style="width:50%;">
+
+                       </td>
+                   </tr>
+
+                </table>
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr><td>
+                     <b>Cadena original del complemento de certificación digital del SAT:</b></td>
+                   </tr>
+                     <tr style="font-size:8pt ">
+                       <td> <span t-esc="tfd.get('selloSAT', tfd.get('SelloSAT', 'No identificado'))"/></td>
+                   </tr>
+                </table>
+
+                <table style=" border:0px solid white; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr><td> <b>Sello Digital del SAT:</b></td>
+
+                   </tr>
+                     <tr style="font-size:8pt ">
+                       <td><span class="nowrap" t-esc="tfd_original_string"/></td>
+                   </tr>
+                </table>
+                 </t>
+                <b style="text-aling:center;">DATOS BANCARIOS</b>
+                <table style=" border:1px solid black; width:100%;font-family:Arial, sans-serif;font-size:9pt  ">
+                   <tr style="text-align:center;">
+                     <td style="width:20%; border-bottom:1px solid black; border-right:1px solid black;"><b>Oficina:</b></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><b>Banco</b></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><b>Sucursal</b></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><b>Cta</b></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><b>Clabe</b></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><b>Referencia</b></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><b>Mails</b></td>
+                   </tr>
+                    <tr style="text-align:center;">
+                     <td style="width:20%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>México</span></td>
+                       <td style="width:10%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Banamex MN</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>16</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>3163073</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><span>002180001631630737</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>1000089178</span></td>
+                       <td style="width:20%; text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>cobranza@provem.com</span></td>
+                   </tr>
+                    <tr style="text-align:center;">
+                     <td style="width:20%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Querétaro</span></td>
+                       <td style="width:10%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Banamex MN</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>4556</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>9651</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><span>002680455600096513</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>891</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black; text-align:left;"><span>cobranza@provem.com</span></td>
+                   </tr>
+                    <tr style="text-align:center;">
+                     <td style="width:20%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Corporativo</span></td>
+                       <td style="width:10%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Banamex USD</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>482</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>9430849</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><span>002180048294308498</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>891</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black; text-align:left;"><span>cobranza@provem.com</span></td>
+                   </tr>
+                    <tr style="text-align:center;">
+                     <td style="width:20%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Corporativo</span></td>
+                       <td style="width:10%;text-align:left;border-bottom:1px solid black; border-right:1px solid black;"><span>Bancomer MN</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>1821</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>0447791674</span></td>
+                       <td style="width:20%;border-bottom:1px solid black; border-right:1px solid black;"><span>012180004477916741</span></td>
+                       <td style="width:10%;border-bottom:1px solid black; border-right:1px solid black;"><span>891</span></td>
+                       <td style="width:20%; border-bottom:1px solid black; border-right:1px solid black;text-align:left;"><span>cobranza@provem.com</span></td>
+                   </tr>
+
+                </table>
+                <div style="background:#bdbdbd;font-family:Arial, sans-serif;font-size:9pt ">
+                    Valor recibido a mi (nuestra) entera satisfacción. Este pagaré forma parte de una serie numerada del 1 al 1 y todos están sujetos a la condición de que,
+                    al no pagarse cualquiera de ellos a su vencimiento, serán exigibles todos los que le sigan en número, además de los ya vencidos desde la fecha de
+                    vencimiento de éste documento hasta el día de su liquidación, causará intereses moratorios al tipo de 3% mensual, pagadero en ésta ciudad juntamente
+                    con el principal, más los gastos que por ello originen.
+                </div>
+                </t>
+
+        </div>
             </t>
         </t>
     </template>
